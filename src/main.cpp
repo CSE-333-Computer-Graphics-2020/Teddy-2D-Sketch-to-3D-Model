@@ -1,7 +1,8 @@
 #include "utils.h"
 #include "math.h"
 #include "poly2tri.h"
-
+#include <set>
+#include <iostream>
 // GLobal variables
 std::vector<float> controlPoints;
 int width = 640, height = 640; 
@@ -9,9 +10,27 @@ bool controlPointsUpdated = false;
 std::vector<p2t::Point*> points;
 std::vector<p2t::Triangle*> triangles;
 p2t::CDT* cdt;
-// p2t::Sweep* sc;
+p2t::Point* p;
 
-// p2t::
+void pushPoint(std::vector<p2t::Point*> & points,p2t::Point* p){
+    p2t::Point* prevPoint;
+    if (points.empty()){
+        points.push_back(p);
+    }
+    else{
+        prevPoint = points.back();
+        if (!(prevPoint->x==p->x && prevPoint->y==p->y)){
+            points.push_back(p);
+        }
+    }
+}
+
+// void removeSimilarPoints(std::vector<p2t::Point*> & points){
+//     for (auto x:points){
+//         std::cout<< x->x<<" "<<x->y<<std::endl;
+//     }
+
+// }
 
 int main(int, char* argv[])
 {
@@ -66,9 +85,8 @@ int main(int, char* argv[])
             x = io.MousePos.x;
             y = io.MousePos.y;
             addPoints(controlPoints, x, y, width, height);
-            p2t::Point* p = new p2t::Point(x,y); 
-            p2t::Node* n = new p2t::Node((*p));
-            points.push_back(p);
+            p = new p2t::Point(x,y); 
+            pushPoint(points,p);
             if (mouseUppedOnce){
                 addPoints(controlPoints, x, y, width, height);
             }
@@ -80,18 +98,24 @@ int main(int, char* argv[])
             x = io.MousePos.x;
             y = io.MousePos.y;
             addPoints(controlPoints, x, y, width, height);
-            points.push_back(new p2t::Point(x,y));
+            p = new p2t::Point(x,y); 
+            pushPoint(points,p);
+            // std::cout<<p->x<<p->y<<std::endl;
             // points[0]->set_zero();
             controlPointsUpdated = true;
             mouseUppedOnce = false;
+            // removeSimilarPoints(points);
+
             cdt = new p2t::CDT(points);
             cdt->Triangulate();
     		triangles = cdt->GetTriangles();
-            // sc = new p2t::Sweep;
-            // p2t::CDT a(points);
-            // cdt = &a;
-    	// 	cdt->Triangulate();
-    	// 	triangles = cdt->GetTriangles();
+            for (auto triangle: triangles){
+                std::cout<<triangle<<std::endl;
+                // std::cout<<triangle->a<<" "<<triangle->b<<" "<< triangle->c<<std::endl;
+
+            }
+            // 	cdt->Triangulate();
+            // 	triangles = cdt->GetTriangles();
         }
 
         if(controlPointsUpdated) {
