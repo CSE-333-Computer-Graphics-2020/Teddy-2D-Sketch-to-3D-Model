@@ -110,7 +110,7 @@ int main(int, char* argv[])
             cdt->Triangulate();
     		triangles = cdt->GetTriangles();
             for (auto triangle: triangles){
-                std::cout<<triangle<<std::endl;
+                std::cout<<triangle->GetPoint(0)->x<<" "<<triangle->GetPoint(0)->y<<std::endl;
                 // std::cout<<triangle->a<<" "<<triangle->b<<" "<< triangle->c<<std::endl;
 
             }

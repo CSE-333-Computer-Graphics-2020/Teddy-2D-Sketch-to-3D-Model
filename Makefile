@@ -133,4 +133,6 @@ $(EXE): $(OBJS)
 clean:
 # 	rm -f $(EXE) $(addprefix ./objs/, $(OBJS))
 	rm -rf ./objs
+	rm ./teddy
 	rm imgui.ini
+
