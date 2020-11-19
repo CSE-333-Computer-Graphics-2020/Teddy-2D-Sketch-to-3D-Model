@@ -9,6 +9,7 @@ int width = 640, height = 640;
 bool controlPointsUpdated = false;
 std::vector<p2t::Point*> points;
 std::vector<p2t::Triangle*> triangles;
+std::vector<float> triangleFlattenedArray;
 p2t::CDT* cdt;
 p2t::Point* p;
 
@@ -110,7 +111,12 @@ int main(int, char* argv[])
             cdt->Triangulate();
     		triangles = cdt->GetTriangles();
             for (auto triangle: triangles){
-                std::cout<<triangle->GetPoint(0)->x<<" "<<triangle->GetPoint(0)->y<<std::endl;
+                for (int i =0;i<3;i++){
+                    triangleFlattenedArray.push_back(triangle->GetPoint(i)->x);
+                    triangleFlattenedArray.push_back(triangle->GetPoint(i)->y);
+                    triangleFlattenedArray.push_back(0);
+                }
+                // std::cout<<triangle->GetPoint(0)->x<<" "<<triangle->GetPoint(0)->y<<std::endl;
                 // std::cout<<triangle->a<<" "<<triangle->b<<" "<< triangle->c<<std::endl;
 
             }
