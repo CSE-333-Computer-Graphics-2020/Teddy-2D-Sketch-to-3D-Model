@@ -71,12 +71,13 @@ int main(int, char* argv[])
     unsigned int VAO_triangles;
     glGenBuffers(1, &VBO_triangles);
     glGenVertexArrays(1, &VAO_triangles);
+
     float rescaled_x;
     float rescaled_y;
     bool mouseDowned = false;
-    p2t::Point* p;
     //Display loop
     int flag=0;
+    bool displayFlag=true;
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
@@ -87,9 +88,14 @@ int main(int, char* argv[])
         ImGui::NewFrame();
 
         // Rendering
-        showOptionsDialog(controlPoints, io);
+        showOptionsDialog(controlPoints,points,triangles,triangleFlattenedArray, displayFlag,io);
         ImGui::Render();
         // Add a new point on mouse click
+        if (!displayFlag){
+            glfwSwapBuffers(window);
+            displayFlag=true;
+            mouseDowned=false;
+        }
         float x,y ;
         int display_w, display_h;
         glfwGetFramebufferSize(window, &display_w, &display_h);
@@ -145,6 +151,7 @@ int main(int, char* argv[])
                 glBindVertexArray(VAO_triangles);
                 glDrawArrays(GL_LINES, 0, triangleFlattenedArray.size()/3);
                 glUseProgram(0);
+                points.clear();
                 ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
                 glfwSwapBuffers(window);
                 controlPointsUpdated = false;

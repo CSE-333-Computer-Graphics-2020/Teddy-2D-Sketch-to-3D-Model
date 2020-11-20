@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <vector>
+#include "poly2tri.h"
 // About Desktop OpenGL function loaders:
 //  Modern desktop OpenGL doesn't have a standard portable header file to load OpenGL function pointers.
 //  Helper libraries are often used for this purpose! Here we are supporting a few common ones (gl3w, glew, glad).
@@ -49,8 +50,11 @@ char * getShaderCode(const char*);
 
 void cleanup(GLFWwindow* );
 void addPoints(std::vector<float> &points, int , int , int , int );
-void clearLines(std::vector<float> &points);
-void showOptionsDialog(std::vector<float> &points, ImGuiIO &io); 
+
+void clearLines(std::vector<float> &points, std::vector<p2t::Point*>& p2tPoints,std::vector<p2t::Triangle*>& triangles,std::vector<float>& triangleFlattenedArray,bool &mouseDowned);
+
+void showOptionsDialog(std::vector<float> &points, std::vector<p2t::Point*>& p2tPoints,std::vector<p2t::Triangle*>& triangles,std::vector<float>& triangleFlattenedArray,bool &mouseDowned,ImGuiIO &io);
+
 GLFWwindow* setupWindow(int, int);
 
 void setVAO(unsigned int &);

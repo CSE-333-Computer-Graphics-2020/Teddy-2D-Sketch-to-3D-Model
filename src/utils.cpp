@@ -1,5 +1,5 @@
 #include "utils.h"
-
+#include "poly2tri.h"
 extern bool controlPointsUpdated;
 
 void cleanup(GLFWwindow* window){
@@ -11,8 +11,12 @@ void cleanup(GLFWwindow* window){
     glfwTerminate();
 }
 
-void clearLines(std::vector<float> &points){
+void clearLines(std::vector<float> &points, std::vector<p2t::Point*>& p2tPoints,std::vector<p2t::Triangle*>& triangles,std::vector<float>& triangleFlattenedArray,bool &mouseDowned){
     points.clear();
+    p2tPoints.clear();
+    triangles.clear();
+    triangleFlattenedArray.clear();
+    mouseDowned = false;
     controlPointsUpdated = false;
 }
 
@@ -24,12 +28,12 @@ void addPoints(std::vector<float> &points, int x, int y, int w, int h){
     points.push_back(0.0);
 }
 
-void showOptionsDialog(std::vector<float> &points, ImGuiIO &io){
+void showOptionsDialog(std::vector<float> &points, std::vector<p2t::Point*>& p2tPoints,std::vector<p2t::Triangle*>& triangles,std::vector<float>& triangleFlattenedArray,bool &mouseDowned,ImGuiIO &io){
         ImGui::Begin("Window1");
   
         if(ImGui::Button("Clear")){
             // Clear points
-            clearLines(points);
+            clearLines(points,p2tPoints,triangles,triangleFlattenedArray,mouseDowned);
         }
         
         ImGui::End();
