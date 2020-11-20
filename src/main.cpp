@@ -71,8 +71,6 @@ int main(int, char* argv[])
     unsigned int VAO_triangles;
     glGenBuffers(1, &VBO_triangles);
     glGenVertexArrays(1, &VAO_triangles);
-    
-
     float rescaled_x;
     float rescaled_y;
     bool mouseDowned = false;
@@ -110,7 +108,7 @@ int main(int, char* argv[])
             controlPointsUpdated = true;
         }
 
-        if (io.MouseReleased[0] &&  !ImGui::IsAnyItemActive()){
+        if (io.MouseReleased[0] &&  !ImGui::IsAnyItemActive() && !ImGui::IsAnyItemHovered()){
             x = io.MousePos.x;
             y = io.MousePos.y;
             addPoints(controlPoints, x, y, width, height);
