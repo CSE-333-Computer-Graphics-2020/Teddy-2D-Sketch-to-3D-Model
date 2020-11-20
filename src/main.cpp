@@ -72,7 +72,7 @@ int main(int, char* argv[])
 
     float rescaled_x;
     float rescaled_y;
-    bool mouseUppedOnce = false;
+    bool mouseDowned = false;
     p2t::Point* p;
     //Display loop
     while (!glfwWindowShouldClose(window))
@@ -102,10 +102,10 @@ int main(int, char* argv[])
             rescaled_y = -1.0 + ((1.0*(height - y) - 0) / (height - 0)) * (1.0 - (-1.0));
             p = new p2t::Point(rescaled_x,rescaled_y); 
             pushPoint(points,p);
-            if (mouseUppedOnce){
+            if (mouseDowned){
                 addPoints(controlPoints, x, y, width, height);
             }
-            mouseUppedOnce = true;
+            mouseDowned = true;
             controlPointsUpdated = true;
         }
 
@@ -118,13 +118,12 @@ int main(int, char* argv[])
             p = new p2t::Point(rescaled_x,rescaled_y); 
             pushPoint(points,p);
             controlPointsUpdated = true;
-            mouseUppedOnce = false;
+            mouseDowned = false;
 
             cdt = new p2t::CDT(points);
             cdt->Triangulate();
     		triangles = cdt->GetTriangles();
-            addToTriangleBuffer();
-
+            addToTriangleBuffer();  
         }
 
         if(controlPointsUpdated) {
