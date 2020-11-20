@@ -78,6 +78,7 @@ int main(int, char* argv[])
     bool mouseDowned = false;
     p2t::Point* p;
     //Display loop
+    int flag=0;
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
@@ -123,7 +124,7 @@ int main(int, char* argv[])
         }
 
         if(controlPointsUpdated) {
-
+            flag=1;
             if (io.MouseDown[0] && !ImGui::IsAnyItemActive()){
                 glBindVertexArray(VAO_controlPoints);
                 glBindBuffer(GL_ARRAY_BUFFER, VBO_controlPoints);
@@ -138,7 +139,6 @@ int main(int, char* argv[])
             }
 
             if (io.MouseReleased[0] &&  !ImGui::IsAnyItemActive()){
-
                 glBindVertexArray(VAO_triangles);
                 glBindBuffer(GL_ARRAY_BUFFER, VAO_triangles);
                 glBufferData(GL_ARRAY_BUFFER, triangleFlattenedArray.size()*sizeof(GLfloat), &triangleFlattenedArray[0], GL_DYNAMIC_DRAW);
@@ -151,6 +151,10 @@ int main(int, char* argv[])
                 glfwSwapBuffers(window);
                 controlPointsUpdated = false;
             }
+        }
+        if(flag==0){
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+            glfwSwapBuffers(window);
         }
         glUseProgram(shaderProgram);
     }
