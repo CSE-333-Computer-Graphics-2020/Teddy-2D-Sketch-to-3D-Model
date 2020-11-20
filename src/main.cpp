@@ -13,8 +13,11 @@ std::vector<p2t::Triangle*> triangles;
 std::vector<float> triangleFlattenedArray;
 p2t::CDT* cdt;
 
-void pushPoint(std::vector<p2t::Point*> & points,p2t::Point* p){
+void pushPoint(float x,float y){
     p2t::Point* prevPoint;
+    double rescaled_x = -1.0 + ((1.0*x - 0) / (width - 0)) * (1.0 - (-1.0));
+    double rescaled_y = -1.0 + ((1.0*(height - y) - 0) / (height - 0)) * (1.0 - (-1.0));
+    p2t::Point* p = new p2t::Point(rescaled_x,rescaled_y); 
     double minDist = 0.1;
     if (points.empty()){
         points.push_back(p);
@@ -98,13 +101,10 @@ int main(int, char* argv[])
             x = io.MousePos.x;
             y = io.MousePos.y;
             addPoints(controlPoints, x, y, width, height);
-            rescaled_x = -1.0 + ((1.0*x - 0) / (width - 0)) * (1.0 - (-1.0));
-            rescaled_y = -1.0 + ((1.0*(height - y) - 0) / (height - 0)) * (1.0 - (-1.0));
-            p = new p2t::Point(rescaled_x,rescaled_y); 
-            pushPoint(points,p);
             if (mouseDowned){
                 addPoints(controlPoints, x, y, width, height);
             }
+            pushPoint(x,y);
             mouseDowned = true;
             controlPointsUpdated = true;
         }
@@ -113,30 +113,25 @@ int main(int, char* argv[])
             x = io.MousePos.x;
             y = io.MousePos.y;
             addPoints(controlPoints, x, y, width, height);
-            rescaled_x = -1.0 + ((1.0*x - 0) / (width - 0)) * (1.0 - (-1.0));
-            rescaled_y = -1.0 + ((1.0*(height - y) - 0) / (height - 0)) * (1.0 - (-1.0));
-            p = new p2t::Point(rescaled_x,rescaled_y); 
-            pushPoint(points,p);
-            controlPointsUpdated = true;
-            mouseDowned = false;
-
+            pushPoint(x,y);
             cdt = new p2t::CDT(points);
             cdt->Triangulate();
     		triangles = cdt->GetTriangles();
             addToTriangleBuffer();  
+            controlPointsUpdated = true;
+            mouseDowned = false;
         }
 
         if(controlPointsUpdated) {
 
             if (io.MouseDown[0] && !ImGui::IsAnyItemActive()){
-            // // Update VAO/VBO for control points (since we added a new point)
                 glBindVertexArray(VAO_controlPoints);
                 glBindBuffer(GL_ARRAY_BUFFER, VBO_controlPoints);
                 glBufferData(GL_ARRAY_BUFFER, controlPoints.size()*sizeof(GLfloat), &controlPoints[0], GL_DYNAMIC_DRAW);
                 glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-                glEnableVertexAttribArray(0); //Enable first attribute buffer (vertices)
+                glEnableVertexAttribArray(0); 
                 glBindVertexArray(VAO_controlPoints);
-                glDrawArrays(GL_LINES, 0, controlPoints.size()/3); // Draw points
+                glDrawArrays(GL_LINES, 0, controlPoints.size()/3);
                 glUseProgram(0);
                 ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
                 glfwSwapBuffers(window);
@@ -149,18 +144,17 @@ int main(int, char* argv[])
                 glBufferData(GL_ARRAY_BUFFER, triangleFlattenedArray.size()*sizeof(GLfloat), &triangleFlattenedArray[0], GL_DYNAMIC_DRAW);
                 glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
                 glEnableVertexAttribArray(0);
-                controlPointsUpdated = false; // Finish all VAO/VBO 
                 glBindVertexArray(VAO_triangles);
-                glDrawArrays(GL_LINES, 0, triangleFlattenedArray.size()/3); // Draw points
+                glDrawArrays(GL_LINES, 0, triangleFlattenedArray.size()/3);
                 glUseProgram(0);
                 ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
                 glfwSwapBuffers(window);
+                controlPointsUpdated = false;
             }
         }
         glUseProgram(shaderProgram);
     }
 
-    // glDeleteBuffers(1, &VBO_triangles);
     glDeleteBuffers(1, &VBO_triangles);
     glDeleteBuffers(1,&VBO_controlPoints);
     //TODO:
