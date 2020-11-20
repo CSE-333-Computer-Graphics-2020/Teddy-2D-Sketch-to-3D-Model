@@ -12,11 +12,10 @@ std::vector<p2t::Point*> points;
 std::vector<p2t::Triangle*> triangles;
 std::vector<float> triangleFlattenedArray;
 p2t::CDT* cdt;
-p2t::Point* p;
 
 void pushPoint(std::vector<p2t::Point*> & points,p2t::Point* p){
     p2t::Point* prevPoint;
-    double minDist = 0.001;
+    double minDist = 0.1;
     if (points.empty()){
         points.push_back(p);
     }
@@ -26,17 +25,28 @@ void pushPoint(std::vector<p2t::Point*> & points,p2t::Point* p){
         
         if (!((prevPoint->x==p->x && prevPoint->y==p->y) || (distance<=minDist))){
             points.push_back(p);
-            // std::cout<<distance<<std::endl;
         }
     }
 }
 
-// void removeSimilarPoints(std::vector<p2t::Point*> & points){
-//     for (auto x:points){
-//         std::cout<< x->x<<" "<<x->y<<std::endl;
-//     }
-
-// }
+void addToTriangleBuffer(){
+    for (auto triangle: triangles){
+        for (int i =0;i<3;i++){
+            triangleFlattenedArray.push_back(triangle->GetPoint(i)->x);
+            triangleFlattenedArray.push_back(triangle->GetPoint(i)->y);
+            triangleFlattenedArray.push_back(0);
+        }
+        triangleFlattenedArray.push_back(triangle->GetPoint(0)->x);
+        triangleFlattenedArray.push_back(triangle->GetPoint(0)->y);
+        triangleFlattenedArray.push_back(0);
+        triangleFlattenedArray.push_back(triangle->GetPoint(2)->x);
+        triangleFlattenedArray.push_back(triangle->GetPoint(2)->y);
+        triangleFlattenedArray.push_back(0);
+        triangleFlattenedArray.push_back(triangle->GetPoint(1)->x);
+        triangleFlattenedArray.push_back(triangle->GetPoint(1)->y);
+        triangleFlattenedArray.push_back(0);
+    }
+}
 
 int main(int, char* argv[])
 {
@@ -60,18 +70,10 @@ int main(int, char* argv[])
     glGenVertexArrays(1, &VAO_triangles);
     
 
-    int button_status = 0;
-
-    float x0;
-    float y0;
-    float diff;
     float rescaled_x;
     float rescaled_y;
-    float minDif;
-    int minX;
-    int minY;
-    float translation[] = {0.0, 0.0};
     bool mouseUppedOnce = false;
+    p2t::Point* p;
     //Display loop
     while (!glfwWindowShouldClose(window))
     {
@@ -92,7 +94,6 @@ int main(int, char* argv[])
         glViewport(0, 0, display_w, display_h);
         glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
         glClear(GL_COLOR_BUFFER_BIT);
-        minDif=5.0;
         if (io.MouseDown[0] && !ImGui::IsAnyItemActive()){
             x = io.MousePos.x;
             y = io.MousePos.y;
@@ -122,23 +123,8 @@ int main(int, char* argv[])
             cdt = new p2t::CDT(points);
             cdt->Triangulate();
     		triangles = cdt->GetTriangles();
-            for (auto triangle: triangles){
-                for (int i =0;i<3;i++){
-                    triangleFlattenedArray.push_back(triangle->GetPoint(i)->x);
-                    triangleFlattenedArray.push_back(triangle->GetPoint(i)->y);
-                    triangleFlattenedArray.push_back(0);
-                }
-                triangleFlattenedArray.push_back(triangle->GetPoint(0)->x);
-                triangleFlattenedArray.push_back(triangle->GetPoint(0)->y);
-                triangleFlattenedArray.push_back(0);
-                triangleFlattenedArray.push_back(triangle->GetPoint(2)->x);
-                triangleFlattenedArray.push_back(triangle->GetPoint(2)->y);
-                triangleFlattenedArray.push_back(0);
-                triangleFlattenedArray.push_back(triangle->GetPoint(1)->x);
-                triangleFlattenedArray.push_back(triangle->GetPoint(1)->y);
-                triangleFlattenedArray.push_back(0);
+            addToTriangleBuffer();
 
-            }
         }
 
         if(controlPointsUpdated) {
@@ -164,14 +150,12 @@ int main(int, char* argv[])
                 glBufferData(GL_ARRAY_BUFFER, triangleFlattenedArray.size()*sizeof(GLfloat), &triangleFlattenedArray[0], GL_DYNAMIC_DRAW);
                 glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
                 glEnableVertexAttribArray(0);
-                
                 controlPointsUpdated = false; // Finish all VAO/VBO 
                 glBindVertexArray(VAO_triangles);
-                glDrawArrays(GL_LINE_STRIP, 0, triangleFlattenedArray.size()/3); // Draw points
+                glDrawArrays(GL_LINES, 0, triangleFlattenedArray.size()/3); // Draw points
                 glUseProgram(0);
                 ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
                 glfwSwapBuffers(window);
-
             }
         }
         glUseProgram(shaderProgram);
