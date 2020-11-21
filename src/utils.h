@@ -1,6 +1,12 @@
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+#include <glm/vec3.hpp> // glm::vec3
+#include <glm/vec4.hpp> // glm::vec4
+#include <glm/mat4x4.hpp> // glm::mat4
+#include <glm/gtc/matrix_transform.hpp> 
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <stdio.h>
 #include <iostream>
 #include <vector>

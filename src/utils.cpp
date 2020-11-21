@@ -198,7 +198,7 @@ GLFWwindow* setupWindow(int width, int height)
 
     // Create window with graphics context
     glfwWindowHint(GLFW_SAMPLES, 4);
-    GLFWwindow* window = glfwCreateWindow(width, height, "Window Title", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(width, height, "Teddy", NULL, NULL);
     if (window == NULL)
         exit(0);
     glfwMakeContextCurrent(window);

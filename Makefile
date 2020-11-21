@@ -23,7 +23,7 @@ SOURCES += ./src/common/shapes.cc ./src/sweep/cdt.cc ./src/sweep/sweep.cc ./src/
 OBJS = $(addsuffix .o, $(basename $(notdir $(SOURCES))))
 UNAME_S := $(shell uname -s)
 
-CXXFLAGS = -I./src/ -I../ -I../../ -I./depends/
+CXXFLAGS = -I./src/ -I../ -I../../ -I./depends/ -I./libs/glm
 CXXFLAGS += -g -Wall -Wformat
 LIBS =
 
@@ -134,6 +134,6 @@ clean:
 # 	rm -f $(EXE) $(addprefix ./objs/, $(OBJS))
 	rm -rf ./objs
 	rm ./teddy
-	rm imgui.ini
 	rm ./testing
+	rm imgui.ini
 
