@@ -152,8 +152,8 @@ void createCubeObject(unsigned int &program, unsigned int &cube_VAO)
     }
 
     //Cube data
-    GLfloat cube_vertices[] = {0.5, 0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, //Front
-                   0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5}; //Back
+    GLfloat cube_vertices[] = {0.1, 0.1, 0.1, -0.1, 0.1, 0.1, -0.1, -0.1, 0.1, 0.1, -0.1, 0.1, //Front
+                   0.1, 0.1, -0.1, -0.1, 0.1, -0.1, -0.1, -0.1, -0.1, 0.1, -0.1, -0.1}; //Back
     GLushort cube_indices[] = {0, 2, 3, 0, 1, 2, //Front
                 4, 7, 6, 4, 6, 5, //Back
                 5, 2, 1, 5, 6, 2, //Left
@@ -314,10 +314,7 @@ int main(int, char* argv[])
                 glBindVertexArray(VAO_triangles);
                 glDrawArrays(GL_LINES, 0, triangleFlattenedArray.size()/3);
                 glUseProgram(0);
-                glBindVertexArray(cubeVAO); 
-                glDrawArrays(GL_TRIANGLES, 0, 6*2*3);
-                points.clear();
-                ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+                glBindVertexArray(cubeVAO);
                 glfwSwapBuffers(window);
                 controlPointsUpdated = false;
             }
