@@ -314,7 +314,8 @@ int main(int, char* argv[])
                 glBindVertexArray(VAO_triangles);
                 glDrawArrays(GL_LINES, 0, triangleFlattenedArray.size()/3);
                 glUseProgram(0);
-                glBindVertexArray(cubeVAO);
+                points.clear();
+                ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
                 glfwSwapBuffers(window);
                 controlPointsUpdated = false;
             }
