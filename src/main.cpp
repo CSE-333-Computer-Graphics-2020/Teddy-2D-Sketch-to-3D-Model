@@ -92,6 +92,7 @@ int main(int, char* argv[])
         ImGui::Render();
         // Add a new point on mouse click
         if (!displayFlag){
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             glfwSwapBuffers(window);
             displayFlag=true;
             mouseDowned=false;
