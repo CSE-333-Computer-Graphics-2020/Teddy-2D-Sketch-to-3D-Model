@@ -4,6 +4,7 @@
 #include <set>
 #include <iostream>
 #include <math.h>
+#include<eigen3/Eigen/Dense>
 // GLobal variables
 std::vector<float> controlPoints;
 int width = 640, height = 640; 
@@ -91,8 +92,8 @@ void setupModelTransformation(unsigned int &program)
     model=Rot4x4*model;
 
     // TODO: Reset modelling transformations to Identity. Uncomment line below before attempting Q4! and Comment out for Q1 and 3.
-    model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0.0, 0.0));//Model coordinates are the world coordinates
-    model = glm::rotate(glm::mat4(1.0f), 1.5f, glm::vec3(1.0,1.0,0.0));
+    model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0.0, 0.5));//Model coordinates are the world coordinates
+    model = glm::rotate(model, 1.20f, glm::vec3(1.0,1.0,0.0));
     
 
     //Pass on the modelling matrix to the vertex shader
@@ -109,8 +110,7 @@ void setupViewTransformation(unsigned int &program)
 {
     //Viewing transformations (World -> Camera coordinates
     glm::mat4 view = glm::lookAt(glm::vec3(0.0, 0.0, 1.8), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
-    //Camera at (0, 0, 100) looking down the negative Z-axis in a right handed coordinate system
-
+    
     glUseProgram(program);
     int vView_uniform = glGetUniformLocation(program, "vView");
     if(vView_uniform == -1){
@@ -305,6 +305,14 @@ int main(int, char* argv[])
                 glDrawArrays(GL_LINES, 0, controlPoints.size()/3);
                 glUseProgram(shaderProgram2);
                 ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+                glUseProgram(shaderProgram);
+                glEnable( GL_CULL_FACE ); // cull face
+                glCullFace( GL_BACK );      // cull back face
+                glFrontFace( GL_CW ); 
+                createCubeObject(shaderProgram,cubeVAO);
+                glBindVertexArray(cubeVAO); 
+                glDrawArrays(GL_TRIANGLES, 0, 6*2*3);
+                glUseProgram(shaderProgram2);
                 glfwSwapBuffers(window);
             }
 
@@ -319,21 +327,19 @@ int main(int, char* argv[])
                 glUseProgram(shaderProgram2);
                 points.clear();
                 ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+                glUseProgram(shaderProgram);
+                glEnable( GL_CULL_FACE ); // cull face
+                glCullFace( GL_BACK );      // cull back face
+                glFrontFace( GL_CW ); 
+                createCubeObject(shaderProgram,cubeVAO);
+                glBindVertexArray(cubeVAO); 
+                glDrawArrays(GL_TRIANGLES, 0, 6*2*3);
+                glUseProgram(shaderProgram2);
                 glfwSwapBuffers(window);
                 controlPointsUpdated = false;
             }
         }
-        if (io.MouseDown[1]){
-
-            glEnable( GL_CULL_FACE ); // cull face
-            glCullFace( GL_BACK );      // cull back face
-            glFrontFace( GL_CW ); 
-            glBindVertexArray(cubeVAO); 
-            glDrawArrays(GL_TRIANGLES, 0, 6*2*3);
-            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-            glUseProgram(shaderProgram);
-            glfwSwapBuffers(window);
-        }
+        
         if(flag==0){
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             glfwSwapBuffers(window);
