@@ -309,7 +309,6 @@ int main(int, char* argv[])
                 glEnable( GL_CULL_FACE ); // cull face
                 glCullFace( GL_BACK );      // cull back face
                 glFrontFace( GL_CW ); 
-                createCubeObject(shaderProgram,cubeVAO);
                 glBindVertexArray(cubeVAO); 
                 glDrawArrays(GL_TRIANGLES, 0, 6*2*3);
                 glUseProgram(shaderProgram2);
@@ -331,7 +330,6 @@ int main(int, char* argv[])
                 glEnable( GL_CULL_FACE ); // cull face
                 glCullFace( GL_BACK );      // cull back face
                 glFrontFace( GL_CW ); 
-                createCubeObject(shaderProgram,cubeVAO);
                 glBindVertexArray(cubeVAO); 
                 glDrawArrays(GL_TRIANGLES, 0, 6*2*3);
                 glUseProgram(shaderProgram2);
