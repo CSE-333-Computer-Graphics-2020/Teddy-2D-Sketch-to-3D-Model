@@ -233,6 +233,7 @@ int main(int, char* argv[])
         glViewport(0, 0, display_w, display_h);
         glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
         glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_DEPTH_BUFFER_BIT);
         if (io.MouseDown[0] && !ImGui::IsAnyItemActive()){
             x = io.MousePos.x;
             y = io.MousePos.y;
@@ -262,12 +263,13 @@ int main(int, char* argv[])
             flag=1;
             if (io.MouseDown[0] && !ImGui::IsAnyItemActive()){
                 glUseProgram(shaderProgram);
+                glEnable(GL_DEPTH_TEST);
                 glEnable( GL_CULL_FACE ); // cull face
                 glCullFace( GL_BACK );      // cull back face
                 glBindVertexArray(cubeVAO); 
                 glDrawArrays(GL_TRIANGLES, 0, 6*2*3);
-                glDisable(GL_DEPTH_TEST);
                 ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+                glDisable(GL_DEPTH_TEST);
                 glUseProgram(shaderProgram2);
                 glBindVertexArray(VAO_controlPoints);
                 glBindBuffer(GL_ARRAY_BUFFER, VBO_controlPoints);
@@ -281,13 +283,14 @@ int main(int, char* argv[])
 
             if (io.MouseReleased[0] &&  !ImGui::IsAnyItemActive()){
                 glUseProgram(shaderProgram);
+                glEnable(GL_DEPTH_TEST);
                 glEnable( GL_CULL_FACE ); // cull face
                 glCullFace( GL_BACK );      // cull back face 
                 glBindVertexArray(cubeVAO); 
                 glDrawArrays(GL_TRIANGLES, 0, 6*2*3);
                 controlPointsUpdated = false;
-                glDisable(GL_DEPTH_TEST);
                 ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+                glDisable(GL_DEPTH_TEST);
                 glUseProgram(shaderProgram2);
                 glBindVertexArray(VAO_triangles);
                 glBindBuffer(GL_ARRAY_BUFFER, VAO_triangles);
