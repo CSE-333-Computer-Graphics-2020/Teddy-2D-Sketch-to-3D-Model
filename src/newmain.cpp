@@ -54,46 +54,11 @@ void addToTriangleBuffer(){
 
 void setupModelTransformation(unsigned int &program)
 {
-    //Modelling transformations (Model -> World coordinates)
-    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0.0, 0.0));//Model coordinates are the world coordinates
-    //TODO: Q1 - Apply modelling transformations here.
-    GLfloat angle=M_PI/6.0;
-    glm::vec3 a=glm::vec3(1,2,2);
-    glm::vec3 w=glm::normalize(a);
-    GLfloat minIndex=0;
-    for(int i=1;i<3;i++)
-        if(w[i]<w[minIndex])
-            minIndex=i;
-    glm::vec3 t=w;
-    t[minIndex]=1;
-    glm::vec3 u=glm::normalize(glm::cross(t,w));
-    glm::vec3 v=glm::cross(w,u);
-    GLfloat RuvwTemp[]={
-        u[0], v[0], w[0],
-        u[1], v[1], w[1],
-        u[2], v[2], w[2]
-    };
-    GLfloat RotTemp[]={
-        cos(angle), sin(angle), 0.0,
-        -sin(angle), cos(angle), 0.0,
-        0.0, 0.0, 1.0
-    };
-    glm::mat3 Ruvw=glm::make_mat3(RuvwTemp);
-    glm::mat3 Rot=glm::make_mat3(RotTemp);
-    glm::mat3 RuvwT=glm::transpose(Ruvw);
-    glm::mat3 Rotation=RuvwT*Rot*Ruvw;
-    GLfloat Rot4x4Temp[]={
-        Rotation[0][0], Rotation[0][1], Rotation[0][2], 0.0,
-        Rotation[1][0], Rotation[1][1], Rotation[1][2], 0.0,
-        Rotation[2][0], Rotation[2][1], Rotation[2][2], 0.0,
-        0.0, 0.0, 0.0, 1.0
-    };
-    glm::mat4 Rot4x4=glm::make_mat4(Rot4x4Temp);
-    model=Rot4x4*model;
-
+        //Modelling transformations (Model -> World coordinates)
+    glm::mat4 model;
     // TODO: Reset modelling transformations to Identity. Uncomment line below before attempting Q4! and Comment out for Q1 and 3.
-    model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0.0, 0.5));//Model coordinates are the world coordinates
-    model = glm::rotate(model, 1.20f, glm::vec3(1.0,1.0,0.0));
+    model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0.0, -1));//Model coordinates are the world coordinates
+    model = glm::rotate(model, (3.14f/6.0f), glm::vec3(1.0,1.0,0.0));
     
 
     //Pass on the modelling matrix to the vertex shader
@@ -296,6 +261,14 @@ int main(int, char* argv[])
         if(controlPointsUpdated) {
             flag=1;
             if (io.MouseDown[0] && !ImGui::IsAnyItemActive()){
+                glUseProgram(shaderProgram);
+                glEnable( GL_CULL_FACE ); // cull face
+                glCullFace( GL_BACK );      // cull back face
+                glBindVertexArray(cubeVAO); 
+                glDrawArrays(GL_TRIANGLES, 0, 6*2*3);
+                glDisable(GL_DEPTH_TEST);
+                ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+                glUseProgram(shaderProgram2);
                 glBindVertexArray(VAO_controlPoints);
                 glBindBuffer(GL_ARRAY_BUFFER, VBO_controlPoints);
                 glBufferData(GL_ARRAY_BUFFER, controlPoints.size()*sizeof(GLfloat), &controlPoints[0], GL_DYNAMIC_DRAW);
@@ -303,19 +276,19 @@ int main(int, char* argv[])
                 glEnableVertexAttribArray(0); 
                 glBindVertexArray(VAO_controlPoints);
                 glDrawArrays(GL_LINES, 0, controlPoints.size()/3);
-                glUseProgram(shaderProgram2);
-                ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-                glUseProgram(shaderProgram);
-                glEnable( GL_CULL_FACE ); // cull face
-                glCullFace( GL_BACK );      // cull back face
-                glFrontFace( GL_CW ); 
-                glBindVertexArray(cubeVAO); 
-                glDrawArrays(GL_TRIANGLES, 0, 6*2*3);
-                glUseProgram(shaderProgram2);
                 glfwSwapBuffers(window);
             }
 
             if (io.MouseReleased[0] &&  !ImGui::IsAnyItemActive()){
+                glUseProgram(shaderProgram);
+                glEnable( GL_CULL_FACE ); // cull face
+                glCullFace( GL_BACK );      // cull back face 
+                glBindVertexArray(cubeVAO); 
+                glDrawArrays(GL_TRIANGLES, 0, 6*2*3);
+                controlPointsUpdated = false;
+                glDisable(GL_DEPTH_TEST);
+                ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+                glUseProgram(shaderProgram2);
                 glBindVertexArray(VAO_triangles);
                 glBindBuffer(GL_ARRAY_BUFFER, VAO_triangles);
                 glBufferData(GL_ARRAY_BUFFER, triangleFlattenedArray.size()*sizeof(GLfloat), &triangleFlattenedArray[0], GL_DYNAMIC_DRAW);
@@ -323,18 +296,8 @@ int main(int, char* argv[])
                 glEnableVertexAttribArray(0);
                 glBindVertexArray(VAO_triangles);
                 glDrawArrays(GL_LINES, 0, triangleFlattenedArray.size()/3);
-                glUseProgram(shaderProgram2);
                 points.clear();
-                ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-                glUseProgram(shaderProgram);
-                glEnable( GL_CULL_FACE ); // cull face
-                glCullFace( GL_BACK );      // cull back face
-                glFrontFace( GL_CW ); 
-                glBindVertexArray(cubeVAO); 
-                glDrawArrays(GL_TRIANGLES, 0, 6*2*3);
-                glUseProgram(shaderProgram2);
                 glfwSwapBuffers(window);
-                controlPointsUpdated = false;
             }
         }
         
