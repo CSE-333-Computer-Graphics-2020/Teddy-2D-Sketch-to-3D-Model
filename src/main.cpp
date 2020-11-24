@@ -6,6 +6,7 @@
 #include <math.h>
 #include "half_edge.h"
 #include <map>
+#include<bits/stdc++.h> 
 // GLobal variables
 std::vector<float> controlPoints;
 int width = 640, height = 640; 

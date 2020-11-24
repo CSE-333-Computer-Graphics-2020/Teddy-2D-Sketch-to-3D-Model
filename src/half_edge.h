@@ -2,8 +2,9 @@
 #include <iostream>
 #include <math.h>
 #include <map>
+#include<bits/stdc++.h> 
 extern std::map<std::pair<int ,int>,struct halfedge *> dictionary_edges;
-
+extern std::vector<p2t::Point*> points;
 typedef struct halfedge{
     struct halfvertex *v;
     struct halfface *f;
@@ -147,7 +148,11 @@ static void pruneTriangles(std::vector<vertex *> vertices, std::vector<face *> f
     edge *prevE;
     edge *e;
     edge *opp;
+    int indx;
     float fanPoint[3];
+    float d;
+    int centre;
+    bool foundIndx =false;
     std::vector<vertex *> uneccVertices;
     for (auto face:faces){
         if (face->triangleType==2){
@@ -159,19 +164,35 @@ static void pruneTriangles(std::vector<vertex *> vertices, std::vector<face *> f
             vertex *v1 = e->v;
             vertex *v2 = e->next->v;
             vertex *v3 = e->next->next->v;
-            uneccVertices.push_back(v3);
             if (e->opposite->f->triangleType ==0){
                 opp = e ->opposite;
                 fanPoint[0] = (v1->x+v2->x + opp->next->next->v->x)/3;
                 fanPoint[1] = (v1->y+v2->y + opp->next->next->v->y)/3;
-                fanPoint[2] = (v1->y+v2->y + opp->next->next->v->x)/3;
-                // for (auto unnVert : uneccVertices){
-                    
-                // }
+                fanPoint[2] = 0.0;
+                indx= 0;
+                for (auto point: points){
+                    d = sqrt(pow( fanPoint[0]*fanPoint[0]  - point->x*point->x , 2 )+pow( fanPoint[1]*fanPoint[1]  - point->y*point->y , 2 ));
+                    if (d<=0.00001){
+                        foundIndx = true;
+                        break;
+                    }
+                    indx++;
+                }
+                if (!foundIndx){
+                    centre = vertices.size();
+                    vertices.push_back(makeHalfEdgeVertex(fanPoint[0],fanPoint[1],fanPoint[2],vertices.size()));
+                }
+                else{
+                    centre = indx;
+                }
             }
-
-
+            if (!(std::find(uneccVertices.begin(),uneccVertices.end(),v3) !=uneccVertices.end()))
+                uneccVertices.push_back(v3);
+            
         }
-    }
 
+
+    }
 }
+
+
