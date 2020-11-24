@@ -64,3 +64,5 @@ void showOptionsDialog(std::vector<float> &points, std::vector<p2t::Point*>& p2t
 GLFWwindow* setupWindow(int, int);
 
 void setVAO(unsigned int &);
+
+void swapInts(int &x, int &y);

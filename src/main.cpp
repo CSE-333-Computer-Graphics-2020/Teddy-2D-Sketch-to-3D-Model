@@ -4,6 +4,7 @@
 #include <set>
 #include <iostream>
 #include <math.h>
+#include "half_edge.h"
 // GLobal variables
 std::vector<float> controlPoints;
 int width = 640, height = 640; 
@@ -59,6 +60,7 @@ int main(int, char* argv[])
     ImVec4 clear_color = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
 
     unsigned int shaderProgram = createProgram("./shaders/vshader.vs", "./shaders/fshader.fs");
+    
 	glUseProgram(shaderProgram);
 
     // Create VBOs, VAOs

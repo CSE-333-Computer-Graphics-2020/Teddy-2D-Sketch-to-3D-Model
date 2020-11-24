@@ -45,6 +45,13 @@ void setVAO(unsigned int &VAO){
     glEnableVertexAttribArray(0);
 }
 
+void swapInts(int &x, int &y){
+   int temp;
+   temp = x; 
+   x = y; 
+   y = temp; 
+}
+
 GLuint createShader(const char* filename, GLenum type)
 {
     const GLchar* source = getShaderCode(filename);
