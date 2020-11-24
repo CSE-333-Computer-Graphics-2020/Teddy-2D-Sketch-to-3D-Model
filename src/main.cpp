@@ -5,6 +5,7 @@
 #include <iostream>
 #include <math.h>
 #include "half_edge.h"
+#include <map>
 // GLobal variables
 std::vector<float> controlPoints;
 int width = 640, height = 640; 
@@ -12,8 +13,13 @@ bool controlPointsUpdated = false;
 std::vector<p2t::Point*> points;
 std::vector<p2t::Triangle*> triangles;
 std::vector<float> triangleFlattenedArray;
+std::vector<vertex *> vertices;
+std::vector<face *> faces;
+std::map<std::pair<int ,int>,struct halfedge *> dictionary_edges;
 p2t::CDT* cdt;
 float translation[] = {0.0,0.0};
+
+
 void pushPoint(float x,float y){
     p2t::Point* prevPoint;
     double rescaled_x = -1.0 + ((1.0*x - 0) / (width - 0)) * (1.0 - (-1.0));
@@ -129,7 +135,12 @@ int main(int, char* argv[])
             cdt = new p2t::CDT(points);
             cdt->Triangulate();
     		triangles = cdt->GetTriangles();
-            addToTriangleBuffer();  
+            addToTriangleBuffer();
+            createHalfEdgeBuffers(points,triangles,vertices,faces);
+            markTriangles(faces);
+            for (auto face:faces){
+                std::cout<<"FACE TYPE: "<<face->triangleType<<std::endl;
+            }
             controlPointsUpdated = true;
             mouseDowned = false;
         }
