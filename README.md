@@ -5,6 +5,8 @@ A sketching interface which converts the 2D freeform strokes created on the scre
 1. [OpenGL](https://www.opengl.org/)
 2. [ImGui](https://github.com/ocornut/imgui)
 3. [Poly2Tri](https://github.com/greenm01/poly2tri)
+4. [glm](https://glm.g-truc.net/)
+5. [GLFW](https://www.glfw.org/)
 
 Note that Poly2tri and ImGui are already included in the source code, so you would not need to download it separately.
 
@@ -16,3 +18,4 @@ Note that Poly2tri and ImGui are already included in the source code, so you wou
 
 ## Usage
 1. Click the left mouse button and drag your mouse to sketch whatever you like.
+2. Clear the drawn figures using the clear button.
