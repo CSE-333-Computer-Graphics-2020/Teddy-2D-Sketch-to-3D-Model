@@ -1,6 +1,7 @@
 #include "utils.h"
 #include "poly2tri.h"
 extern bool controlPointsUpdated;
+extern float translation[];
 
 void cleanup(GLFWwindow* window){
     ImGui_ImplOpenGL3_Shutdown();
@@ -29,14 +30,29 @@ void addPoints(std::vector<float> &points, int x, int y, int w, int h){
 }
 
 void showOptionsDialog(std::vector<float> &points, std::vector<p2t::Point*>& p2tPoints,std::vector<p2t::Triangle*>& triangles,std::vector<float>& triangleFlattenedArray,bool &mouseDowned,ImGuiIO &io){
-        ImGui::Begin("Window1");
-  
+    ImGui::SetNextWindowPos(ImVec2(0, 0));
+                
+        ImGui::Begin("Options", NULL, ImGuiWindowFlags_AlwaysAutoResize);
+        //   {
+            // ImGui::Begin("Position");
+
+
+        if (ImGui::SliderFloat2("position", translation, -1.0, 1.0)){
+            std::cout<<"good party"<<std::endl;
+
+        }
+            // ImGui::End();
+
+
+        // }
+
         if(ImGui::Button("Clear")){
             // Clear points
             clearLines(points,p2tPoints,triangles,triangleFlattenedArray,mouseDowned);
         }
-        
+        //   ImGui::PushItemWidth(5000.0);
         ImGui::End();
+        
 }
 
 void setVAO(unsigned int &VAO){

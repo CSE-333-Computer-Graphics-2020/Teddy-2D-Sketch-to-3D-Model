@@ -4,7 +4,7 @@
 #include <set>
 #include <iostream>
 #include <math.h>
-#include<eigen3/Eigen/Dense>
+
 // GLobal variables
 std::vector<float> controlPoints;
 int width = 640, height = 640; 
@@ -13,6 +13,7 @@ std::vector<p2t::Point*> points;
 std::vector<p2t::Triangle*> triangles;
 std::vector<float> triangleFlattenedArray;
 p2t::CDT* cdt;
+float translation[] = {0.0,0.0};
 
 void pushPoint(float x,float y){
     p2t::Point* prevPoint;

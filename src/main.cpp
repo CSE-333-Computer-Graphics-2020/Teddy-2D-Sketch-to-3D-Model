@@ -13,7 +13,7 @@ std::vector<p2t::Point*> points;
 std::vector<p2t::Triangle*> triangles;
 std::vector<float> triangleFlattenedArray;
 p2t::CDT* cdt;
-
+float translation[] = {0.0,0.0};
 void pushPoint(float x,float y){
     p2t::Point* prevPoint;
     double rescaled_x = -1.0 + ((1.0*x - 0) / (width - 0)) * (1.0 - (-1.0));
@@ -57,6 +57,8 @@ int main(int, char* argv[])
     GLFWwindow* window = setupWindow(width, height);
     ImGuiIO& io = ImGui::GetIO(); // Create IO object
 
+
+
     ImVec4 clear_color = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
 
     unsigned int shaderProgram = createProgram("./shaders/vshader.vs", "./shaders/fshader.fs");
@@ -80,6 +82,7 @@ int main(int, char* argv[])
     //Display loop
     int flag=0;
     bool displayFlag=true;
+
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
@@ -91,6 +94,7 @@ int main(int, char* argv[])
 
         // Rendering
         showOptionsDialog(controlPoints,points,triangles,triangleFlattenedArray, displayFlag,io);
+
         ImGui::Render();
         // Add a new point on mouse click
         if (!displayFlag){
@@ -105,7 +109,7 @@ int main(int, char* argv[])
         glViewport(0, 0, display_w, display_h);
         glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
         glClear(GL_COLOR_BUFFER_BIT);
-        if (io.MouseDown[0] && !ImGui::IsAnyItemActive()){
+        if (io.MouseDown[0] && !ImGui::IsAnyItemActive() && !ImGui::IsAnyItemHovered()){
             x = io.MousePos.x;
             y = io.MousePos.y;
             addPoints(controlPoints, x, y, width, height);
